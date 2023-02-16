@@ -1,76 +1,47 @@
 /*
-Parameters of pulse timings and modes:
+  Parameters of pulse timings and modes:
 
-Surname: WILSON
+  Surname: WILSON
 
-W = 23
-I = 9
-L = 12
-S = 19
-O = 15
+  W = 23
+  I = 9
+  L = 12
+  S = 19
+  O = 15
 
-Parameters
+  Parameters
 
-width of first pulse
-a = 23 x 100µS = 2300µS
+  width of first pulse
+  a = 23 x 100µS = 2300µS
 
-Width of space between pulses
-b = 9 x 100µS = 900µS
+  Width of space between pulses
+  b = 9 x 100µS = 900µS
 
-Number of pulses in a block
-c = 12 + 4 = 16
+  Number of pulses in a block
+  c = 12 + 4 = 16
 
-Space between pulse blocks
-d = 19 x 500µS = 9500µS
+  Space between pulse blocks
+  d = 19 x 500µS = 9500µS
 
-Mode
-(15/4)+1 = 4
-Half d and b time until switch set back to zero
+  Mode
+  (15/4)+1 = 4
+  Half d and b time until switch set back to zero
 
-
+*/
 /*****************************************************
    DEFINE CONSTANTS
 *****************************************************/
-
-#define SIGNAL_A_PULSE_a1  2300                               //Signal A first pulse duration
-#define SIGNAL_A_PULSE_a2  2350                               //Signal A second pulse duration
-#define SIGNAL_A_PULSE_a3  2400                               //Signal A third pulse duration
-#define SIGNAL_A_PULSE_a4  2450                               //Signal A fourth pulse duration
-#define SIGNAL_A_PULSE_a5  2500                               //Signal A fifth pulse duration
-#define SIGNAL_A_PULSE_a6  2550                               //Signal A sixth pulse duration
-#define SIGNAL_A_PULSE_a7  2600                               //Signal A seventh pulse duration
-#define SIGNAL_A_PULSE_a8  2650                               //Signal A eighth pulse duration
-#define SIGNAL_A_PULSE_a9  2700                               //Signal A ninth pulse duration
-#define SIGNAL_A_PULSE_a10 2750                               //Signal A tenth pulse duration
-#define SIGNAL_A_PULSE_a11 2800                               //Signal A eleventh pulse duration
-#define SIGNAL_A_PULSE_a12 2850                               //Signal A twelfth pulse duration
-#define SIGNAL_A_PULSE_a13 2900                               //Signal A thirteenth pulse duration
-#define SIGNAL_A_PULSE_a14 2950                               //Signal A fourteenth pulse duration
-#define SIGNAL_A_PULSE_a15 3000                               //Signal A fifteenth pulse duration
-#define SIGNAL_A_PULSE_a16 3050                               //Signal A sixteenth pulse duration
-
+#define SIGNAL_A_PULSE 2300                                   //Signal A high pulse base value
+#define SIGNAL_A_PULSE_QTY 16                                 //Number of signal A pulses
+#define PULSE_INCR 50                                          //Signal A pulse width increment time
 #define SIGNAL_A_LOW_b 900                                    //Signal A low pulse duration (Parameter b)
 #define SIGNAL_A_LOW_d 9500                                   //Signal A low pulse duration (Parameter d)
 #define SIGNAL_B_PULSE 50                                     //Signal B pulse duration
 
-#define SIGNAL_B_TIME_LOW                                     //Signal B low pulse duration (a1 + b + a2 + b + a3 + b + d)
-        ((SIGNAL_A_PULSE_a1 +
-          SIGNAL_A_LOW_b +
-          SIGNAL_A_PULSE_a2 +
-          SIGNAL_A_LOW_b +
-          SIGNAL_A_PULSE_a3 +
-          SIGNAL_A_LOW_b +
-          SIGNAL_A_LOW_d))
+#define SIGNAL_B_TIME_LOW ((SIGNAL_A_PULSE_a1 + SIGNAL_A_LOW_b + SIGNAL_A_PULSE_a2 + SIGNAL_A_LOW_b + SIGNAL_A_PULSE_a3 + SIGNAL_A_LOW_b + SIGNAL_A_LOW_d))  //Signal B low pulse duration (a1 + b + a2 + b + a3 + b + d)
 
-#define SIGNAL_B_TIME_LOW_MODIFIED                            //Signal B modified low pulse duration
-        ((SIGNAL_A_PULSE_a1 +
-          SIGNAL_A_LOW_b_HALF +
-          SIGNAL_A_PULSE_a2 +
-          SIGNAL_A_LOW_b_HALF +
-          SIGNAL_A_PULSE_a3 +
-          SIGNAL_A_LOW_b_HALF +
-          SIGNAL_A_LOW_d_HALF))    
-                                     
+#define SIGNAL_B_TIME_LOW_MODIFIED ((SIGNAL_A_PULSE_a1 + SIGNAL_A_LOW_b_HALF + SIGNAL_A_PULSE_a2 + SIGNAL_A_LOW_b_HALF + SIGNAL_A_PULSE_a3 + SIGNAL_A_LOW_b_HALF + SIGNAL_A_LOW_d_HALF))   //Signal B modified low pulse duration   
+
 #define SIGNAL_A_LOW_b_HALF ((SIGNAL_A_LOW_b / 2))            //Signal A half of low pulse duration (Parameter b/2)
 #define SIGNAL_A_LOW_d_HALF ((SIGNAL_A_LOW_d / 2))            //Signal A half of low pulse duration (Parameter d/2)
 #define DEBOUNCE_TIME 25                                      //Debounce time for button presses
@@ -113,98 +84,42 @@ void setup()                                                  //Declare initiali
 
 }
 
-
 void signal_normal()                                          //Declare function for normal signal output
 {
   digitalWrite(SIGNAL_B, HIGH);                               //Set signal B high
-  delayMicroseconds(SIGNAL_B_PULSE);                          //Wait for signal B pulse time to elapse
+  delayMicroseconds(SIGNAL_B_PULSE);                          //Wait for pulse duration to elapse
   digitalWrite(SIGNAL_B, LOW);                                //Set signal B low
-  digitalWrite(SIGNAL_A, HIGH);                               //Set signal A high
-  delayMicroseconds(SIGNAL_A_PULSE_a1);                       //Wait for low time b to elapse
-  digitalWrite(SIGNAL_A, LOW);                                //Set signal A low
-  delayMicroseconds(SIGNAL_A_LOW_b);                          //Wait for low time b to elapse
-  digitalWrite(SIGNAL_A, HIGH);                               //Set signal A high
-  delayMicroseconds(SIGNAL_A_PULSE_a2);                       //Wait for second pulse time to elapse
-  digitalWrite(SIGNAL_A, LOW);                                //Set signal A low
-  delayMicroseconds(SIGNAL_A_LOW_b);                          //Wait for low time b to elapse
-  digitalWrite(SIGNAL_A, HIGH);                               //Set signal A high
-  delayMicroseconds(SIGNAL_A_PULSE_a3);                       //Wait for third pulse time to elapse
-  digitalWrite(SIGNAL_A, LOW);                                //Set signal A low
-  delayMicroseconds(SIGNAL_A_LOW_b);                          //Wait for low time b to elapse
-  digitalWrite(SIGNAL_A, HIGH);                               //Set signal A high
-  delayMicroseconds(SIGNAL_A_PULSE_a4);                       //Wait for third pulse time to elapse
-  digitalWrite(SIGNAL_A, LOW);                                //Set signal A low
-  delayMicroseconds(SIGNAL_A_LOW_b);                          //Wait for low time b to elapse
-  digitalWrite(SIGNAL_A, HIGH);                               //Set signal A high
-  delayMicroseconds(SIGNAL_A_PULSE_a5);                       //Wait for third pulse time to elapse
-  digitalWrite(SIGNAL_A, LOW);                                //Set signal A low
-  delayMicroseconds(SIGNAL_A_LOW_b);                          //Wait for low time b to elapse
-  digitalWrite(SIGNAL_A, HIGH);                               //Set signal A high
-  delayMicroseconds(SIGNAL_A_PULSE_a6);                       //Wait for third pulse time to elapse
-  digitalWrite(SIGNAL_A, LOW);                                //Set signal A low
-  delayMicroseconds(SIGNAL_A_LOW_b);                          //Wait for low time b to elapse
-  digitalWrite(SIGNAL_A, HIGH);                               //Set signal A high
-  delayMicroseconds(SIGNAL_A_PULSE_a7);                       //Wait for third pulse time to elapse
-  digitalWrite(SIGNAL_A, LOW);                                //Set signal A low
-  delayMicroseconds(SIGNAL_A_LOW_b);                          //Wait for low time b to elapse
-  digitalWrite(SIGNAL_A, HIGH);                               //Set signal A high
-  delayMicroseconds(SIGNAL_A_PULSE_a8);                       //Wait for third pulse time to elapse
-  digitalWrite(SIGNAL_A, LOW);                                //Set signal A low
-  delayMicroseconds(SIGNAL_A_LOW_b);                          //Wait for low time b to elapse
-  digitalWrite(SIGNAL_A, HIGH);                               //Set signal A high
-  delayMicroseconds(SIGNAL_A_PULSE_a9);                       //Wait for third pulse time to elapse
-  digitalWrite(SIGNAL_A, LOW);                                //Set signal A low
-  delayMicroseconds(SIGNAL_A_LOW_b);                          //Wait for low time b to elapse
-  digitalWrite(SIGNAL_A, HIGH);                               //Set signal A high
-  delayMicroseconds(SIGNAL_A_PULSE_a10);                       //Wait for third pulse time to elapse
-  digitalWrite(SIGNAL_A, LOW);                                //Set signal A low
-  delayMicroseconds(SIGNAL_A_LOW_b);                          //Wait for low time b to elapse
-  digitalWrite(SIGNAL_A, HIGH);                               //Set signal A high
-  delayMicroseconds(SIGNAL_A_PULSE_a11);                       //Wait for third pulse time to elapse
-  digitalWrite(SIGNAL_A, LOW);                                //Set signal A low
-  delayMicroseconds(SIGNAL_A_LOW_b);                          //Wait for low time b to elapse
-  digitalWrite(SIGNAL_A, HIGH);                               //Set signal A high
-  delayMicroseconds(SIGNAL_A_PULSE_a12);                       //Wait for third pulse time to elapse
-  digitalWrite(SIGNAL_A, LOW);                                //Set signal A low
-  delayMicroseconds(SIGNAL_A_LOW_b);                          //Wait for low time b to elapse
-  digitalWrite(SIGNAL_A, HIGH);                               //Set signal A high
-  delayMicroseconds(SIGNAL_A_PULSE_a13);                       //Wait for third pulse time to elapse
-  digitalWrite(SIGNAL_A, LOW);                                //Set signal A low
-  delayMicroseconds(SIGNAL_A_LOW_b);                          //Wait for low time b to elapse
-  digitalWrite(SIGNAL_A, HIGH);                               //Set signal A high
-  delayMicroseconds(SIGNAL_A_PULSE_a14);                       //Wait for third pulse time to elapse
-  digitalWrite(SIGNAL_A, LOW);                                //Set signal A low
-  delayMicroseconds(SIGNAL_A_LOW_b);                          //Wait for low time b to elapse
-  digitalWrite(SIGNAL_A, HIGH);                               //Set signal A high
-  delayMicroseconds(SIGNAL_A_PULSE_a15);                       //Wait for third pulse time to elapse
-  digitalWrite(SIGNAL_A, LOW);                                //Set signal A low
-  delayMicroseconds(SIGNAL_A_LOW_b);                          //Wait for low time b to elapse
-  digitalWrite(SIGNAL_A, HIGH);                               //Set signal A high
-  delayMicroseconds(SIGNAL_A_PULSE_a6);                       //Wait for third pulse time to elapse
-  digitalWrite(SIGNAL_A, LOW);                                //Set signal A low
 
-  delayMicroseconds(SIGNAL_A_LOW_b);                          //Wait for low time b to elapse
-  delayMicroseconds(SIGNAL_A_LOW_d);                          //Wait for low time d to elapse
+  for (int pulse_count_norm = 0; pulse_count_norm < SIGNAL_A_PULSE_QTY; pulse_count_norm++)
+    //Declare integer pulse_count_norm as equalling zero, while pulse count is less than signal A pulse quantity, increment pulse count by one
+  {
+    digitalWrite(SIGNAL_A, HIGH);                             //Set signal A high
+    delayMicroseconds(SIGNAL_A_PULSE + (pulse_count_norm * PULSE_INCR));    //Wait for (pulse time + (pulse count x pulse increment)) to elapse
+    digitalWrite(SIGNAL_A, LOW);                              //Set signal A low
+    delayMicroseconds(SIGNAL_A_LOW_b);                        //Wait for pulse low duration to elapse
+  }
+
+  delayMicroseconds(SIGNAL_A_LOW_b);                          //Wait for pulse low duration to elapse
+  delayMicroseconds(SIGNAL_A_LOW_d);                          //Wait for parameter d duration to elapse
 }
 
-void signal_modified()                                        //Declare function for modified signal output
+void signal_modified()                                         //Declare function for modified signal output
 {
   digitalWrite(SIGNAL_B, HIGH);                               //Set signal B high
-  delayMicroseconds(SIGNAL_B_PULSE);                          //Wait for signal B pulse time to elapse
+  delayMicroseconds(SIGNAL_B_PULSE);                          //Wait for pulse duration to elapse
   digitalWrite(SIGNAL_B, LOW);                                //Set signal B low
-  digitalWrite(SIGNAL_A, HIGH);                               //Set signal A high
-  delayMicroseconds(SIGNAL_A_PULSE_a1);                       //Wait for low time b to elapse
-  digitalWrite(SIGNAL_A, LOW);                                //Set signal A low
-  delayMicroseconds(SIGNAL_A_LOW_b_HALF);                     //Wait for low time b to elapse
-  digitalWrite(SIGNAL_A, HIGH);                               //Set signal A high
-  delayMicroseconds(SIGNAL_A_PULSE_a2);                       //Wait for second pulse time to elapse
-  digitalWrite(SIGNAL_A, LOW);                                //Set signal A low
-  delayMicroseconds(SIGNAL_A_LOW_b_HALF);                     //Wait for low time b to elapse
-  digitalWrite(SIGNAL_A, HIGH);                               //Set signal A high
-  delayMicroseconds(SIGNAL_A_PULSE_a3);                       //Wait for third pulse time to elapse
-  digitalWrite(SIGNAL_A, LOW);                                //Set signal A low
-  delayMicroseconds(SIGNAL_A_LOW_b_HALF);                     //Wait for low time b to elapse
-  delayMicroseconds(SIGNAL_A_LOW_d_HALF);                     //Wait for low time d to elapse
+
+  for (int pulse_count_modi = 0; pulse_count_modi < SIGNAL_A_PULSE_QTY; pulse_count_modi++)
+    //Declare integer pulse_count_modi as equalling zero, while pulse count is less than signal A pulse quantity, increment pulse count by one
+  {
+    digitalWrite(SIGNAL_A, HIGH);                             //Set signal A high
+    delayMicroseconds(SIGNAL_A_PULSE + (pulse_count_modi * PULSE_INCR));    //Wait for (pulse time + (pulse count x pulse increment)) to elapse
+    digitalWrite(SIGNAL_A, LOW);                              //Set signal A low
+    delayMicroseconds(SIGNAL_A_LOW_b_HALF);                        //Wait for pulse low duration to elapse
+  }
+
+  delayMicroseconds(SIGNAL_A_LOW_b_HALF);                          //Wait for pulse low duration to elapse
+  delayMicroseconds(SIGNAL_A_LOW_d_HALF);                          //Wait for parameter d duration to elapse
 }
 
 
@@ -220,7 +135,7 @@ void loop()
 
   else if (button_1_state == LOW && button_2_state == LOW)    //If neither button 1 or 2 are pressed
   {
-                                                              //Do nothing
+    //Do nothing
   }
 
   else if (button_1_state == HIGH && button_2_state == HIGH) { //If both buttons are pressed
